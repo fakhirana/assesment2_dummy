@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Detail Kamar</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Data Detail Kamar</h2>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Nama Kamar</th>
+                <th>Tipe Kamar</th>
+                <th>Harga</th>
+                <th>Fasilitas</th>
+                <th>Stok</th>
+                <th>Deskripsi</th>
+                <th>Gambar</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'getkamar.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    var table = $('#data-table tbody');
+                    $.each(data, function (index, item) {
+                        table.append('<tr><td>' + item.nama_kamar + '</td><td>' + item.tipe_kamar + '</td><td>' + item.harga + '</td><td>' + item.fasilitas + '</td><td>' + item.stok + '</td><td>' + item.deskripsi + '</td><td>' + item.gambar + '</td><td><button class="hapus-btn" data-id="' + item.id + '">Hapus</button></td></tr>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText); 
+                }
+            });
+
+            $('#data-table').on('click', '.hapus-btn', function () {
+                var id = $(this).data('id');
+                var row = $(this).closest('tr'); 
+                $.ajax({
+                    url: 'detail_kamar.php', 
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        row.remove();
+                        console.log('Data berhasil dihapus');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText); 
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
